@@ -27,25 +27,25 @@ Published under GPLv3 License.
 			airspeed : 0,
 			roll : 0,
 			pitch : 0,
-			off_flag: true,
+			off_flag: false,
 			altitude : 0,
 			pressure : 30,
 			turn : 0,
-			slip : 0,
+			slip : 0.5,
 			heading : 0,
 			beaconone : 90,
-			beacononeshow : true,
+			beacononeshow : false,
 			beacontwo : 30,
-			beacontwoshow : true,
+			beacontwoshow : false,
 			vario : 0,
 			img_directory : 'img/'
 			}, options 
 		), 
     constants = {
-			pitch_bound:30,
+			pitch_bound: 26,
 			vario_bound : 1.95,
 			airspeed_bound_l : 0,
-			airspeed_bound_h : 160
+			airspeed_bound_h : 210
 		};
 
 		// Air Speed - Set air speed
@@ -63,8 +63,7 @@ Published under GPLv3 License.
 			if(pitch>constants.pitch_bound) pitch = constants.pitch_bound;
 			else if(pitch<-constants.pitch_bound) pitch = -constants.pitch_bound;
 			placeholder.each(function(){
-        console.log("pitching here");
-				$(this).find('div.instrument.attitude div.attitude div.attitude_pitch').css('transform', 'translateY(' + (pitch * 0.25) + '%)');
+				$(this).find('div.instrument.attitude div.attitude div.attitude_pitch').css('transform', 'translateY(' + (pitch * 0.7) + '%)');
 			});
 		}
 
@@ -84,9 +83,9 @@ Published under GPLv3 License.
 
 		// Altimeter - Set altitude
 		function _setAltitude(altitude){
-			var hand100 = altitude / 100 * 360;
-			var hand1000 = altitude / 1000 * 360;
-			var hand10000 = altitude / 10000 * 360;
+			var hand100 = altitude / 1000 * 360;
+			var hand1000 = altitude / 10000 * 360;
+			var hand10000 = altitude / 100000 * 360;
 			placeholder.each(function(){
 				$(this).find('div.instrument.altimeter div.altimeter_hand100').css('transform', 'rotate(' + hand100 + 'deg)');
 				$(this).find('div.instrument.altimeter div.altimeter_hand1000').css('transform', 'rotate(' + hand1000 + 'deg)');
@@ -168,7 +167,9 @@ Published under GPLv3 License.
 		// Turn Coordinator - Set turn direction
 		function _setTurn(turn) {
 			placeholder.each(function(){
-				$(this).find('div.instrument.turn div.turn_airplane').css('transform', 'rotate('+ turn +'deg)');
+				$(this).find('div.instrument.turn div.turn_airplane')
+          .css('transform', 'rotate('+ turn +'deg)')
+          .css('transition', 'transform 0.2s linear');
 			});
 		}
 
@@ -183,9 +184,10 @@ Published under GPLv3 License.
 						var scale = $(this).find('div.instrument.turn').width() / 400;
 						if (slip < 0) slip = 0;
 						else if (slip > 1) slip = 1;
-            pathLength = path.getTotalLength() * slip;
-						var pos = path.getPointAtLength( pathLength); ///parseFloat( pathLength.toPrecision(5) ) );
-						$(this).find('div.instrument.turn div.turn_ball').css('transform', 'translate(' + (pos.x - 200) * scale + 'px, ' + (pos.y - 260) * scale + 'px)');
+						var pos = path.getPointAtLength( path.getTotalLength() * slip );
+						$(this).find('div.instrument.turn div.turn_ball')
+              .css('transform', 'translate(' + (pos.x - 200) * scale + 'px, ' + (pos.y - 260) * scale + 'px)')
+              .css('transition', 'transform 0.5s linear');
 					}
 				});
 			}
@@ -306,25 +308,24 @@ Published under GPLv3 License.
 
     });
 
+  	// Public methods
+  	this.setAirSpeed =  function(options){ var test = options.airSpeed    ; if(test !== undefined) _setAirSpeed(test);};
+  	this.setRoll =      function(options){ var test = options.roll        ; if(test !== undefined) _setRoll(test);};
+  	this.setPitch =     function(options){ var test = options.pitch       ; if(test !== undefined) _setPitch(test);};
+  	this.setOffFlag =   function(options){ var test = options.offFlag     ; if(test !== undefined) _setOffFlag(test);};
+  	this.setAltitude =  function(options){ var test = options.altitude    ; if(test !== undefined) _setAltitude(test);};
+  	this.setPressure =  function(options){ var test = options.pressure    ; if(test !== undefined) _setPressure(test);};
+  	this.setTurn =      function(options){ var test = options.turnRate    ; if(test !== undefined) _setTurn(test);};
+  	this.setSlip =      function(options){ var test = options.yaw         ; if(test !== undefined) _setSlip(test);};
+  	this.setHeading =   function(options){ var test = options.heading     ; if(test !== undefined) _setHeading(test);};
+  	this.setBeaconOne = function(options){ var test = options.beaconOne   ; if(test !== undefined) _setBeaconOne(test);};
+  	this.setBeaconTwo = function(options){ var test = options.beaconTwo   ; if(test !== undefined) _setBeaconTwo(test);};
+  	this.setVario =     function(options){ var test = options.vario       ; if(test !== undefined) _setVario(test);};
+  	this.resize =       function(options){ var test = options.resize      ; if(test !== undefined) _resize(test);};
+  	this.toggleBox =    function(options){ var test = options.toggleBox   ; if(test !== undefined) _toggleBox(test);};
+  	this.toggleScrews = function(options){ var test = options.toggleScrews; if(test !== undefined) _toggleScrews(test);};
 
-		// Public methods
-		this.setAirSpeed =  function(options){ var test = options.airSpeed    ; _setAirSpeed(test);};
-		this.setRoll =      function(options){ var test = options.roll        ; _setRoll(test);};
-		this.setPitch =     function(options){ var test = options.pitch       ; _setPitch(test);};
-		this.setOffFlag =   function(options){ var test = options.offFlag     ; _setOffFlag(test);};
-		this.setAltitude =  function(options){ var test = options.altitude    ; _setAltitude(test);};
-		this.setPressure =  function(options){ var test = options.pressure    ; _setPressure(test);};
-		this.setTurn =      function(options){ var test = options.turnRate    ; _setTurn(test);};
-		this.setSlip =      function(options){ var test = options.yaw         ; _setSlip(test);};
-		this.setHeading =   function(options){ var test = options.heading     ; _setHeading(test);};
-		this.setBeaconOne = function(options){ var test = options.beaconOne   ; _setBeaconOne(test);};
-		this.setBeaconTwo = function(options){ var test = options.beaconTwo   ; _setBeaconTwo(test);};
-		this.setVario =     function(options){ var test = options.vario       ; _setVario(test);};
-		this.resize =       function(options){ var test = options.resize      ; _resize(test);};
-		this.toggleBox =    function(options){ var test = options.toggleBox   ; _toggleBox(test);};
-		this.toggleScrews = function(options){ var test = options.toggleScrews; _toggleScrews(test);};
-
-		return built;
+  	return built;
 	}
 
 	// Extension to jQuery
