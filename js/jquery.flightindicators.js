@@ -63,7 +63,8 @@ Published under GPLv3 License.
 			if(pitch>constants.pitch_bound) pitch = constants.pitch_bound;
 			else if(pitch<-constants.pitch_bound) pitch = -constants.pitch_bound;
 			placeholder.each(function(){
-				$(this).find('div.instrument.attitude div.attitude div.attitude_pitch').css('top', pitch * 0.25 + '%');
+        console.log("pitching here");
+				$(this).find('div.instrument.attitude div.attitude div.attitude_pitch').css('transform', 'translateY(' + (pitch * 0.25) + '%)');
 			});
 		}
 
