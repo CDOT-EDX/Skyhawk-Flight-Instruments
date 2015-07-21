@@ -1,6 +1,6 @@
 <!-- 
 Skyhawk Flight Instruments (https://github.com/uw-ray/Skyhawk-Flight-Instruments)
-By Edward Hanna (edward.hanna@senecacollege.ca) and Raymond Blaga (raymond.blaga@gmail.com)
+By Raymond Blaga (raymond.blaga@gmail.com), Edward Hanna (edward.hanna@senecacollege.ca), Pavlo Kuzhel (pavlo.kuzhel@senecacollege.ca)
 
 Forked from jQuery Flight Indicators (https://github.com/sebmatton/jQuery-Flight-Indicators)
 By Sébastien Matton (seb_matton@hotmail.com)
@@ -53,7 +53,7 @@ Published under GPLv3 License.
             airspeed.setAirSpeed(increment);
             increment++;
             
-            if(increment == 180){
+            if(increment == 300){
                 clearInterval(myInterval);
                 sleep(1000);
                 $("#airspeedButton").attr('disabled',false);

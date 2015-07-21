@@ -1,6 +1,6 @@
 <!-- 
 Skyhawk Flight Instruments (https://github.com/uw-ray/Skyhawk-Flight-Instruments)
-By Edward Hanna (edward.hanna@senecacollege.ca) and Raymond Blaga (raymond.blaga@gmail.com)
+By Raymond Blaga (raymond.blaga@gmail.com), Edward Hanna (edward.hanna@senecacollege.ca), Pavlo Kuzhel (pavlo.kuzhel@senecacollege.ca)
 
 Forked from jQuery Flight Indicators (https://github.com/sebmatton/jQuery-Flight-Indicators)
 By Sébastien Matton (seb_matton@hotmail.com)
@@ -35,17 +35,22 @@ Published under GPLv3 License.
 	<script type="text/javascript">
 
 		var increment = 0;
-		var variometer = $.flightIndicator('#variometer', 'variometer', {vario:-5});
+		var clockwise = true;
+		var variometer = $.flightIndicator('#variometer', 'variometer', {vario:0});
 
 		function doVariometer(){
 
 			var myInterval = setInterval(function() {
 
 				$("#variometerButton").text("Playing");
-			    increment++;
 
-				// Vario update
-			    variometer.setVario(2*Math.sin(increment/10));
+				if (increment > 45) clockwise = false;
+				if (increment < - 45) clockwise = true;
+
+				if (clockwise) increment += 0.5;
+				else increment -= 0.5;
+
+			    variometer.setVario(increment);
 				
 				if(increment == 157){
 					clearInterval(myInterval);

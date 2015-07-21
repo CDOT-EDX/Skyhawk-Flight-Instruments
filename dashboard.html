@@ -1,6 +1,6 @@
 <!-- 
-jQuery Skyhawk Flight Instruments (https://github.com/uw-ray/Skyhawk-Flight-Instruments)
-By Edward Hanna (edward.hanna@senecacollege.ca) and Raymond Blaga (raymond.blaga@gmail.com)
+Skyhawk Flight Instruments (https://github.com/uw-ray/Skyhawk-Flight-Instruments)
+By Raymond Blaga (raymond.blaga@gmail.com), Edward Hanna (edward.hanna@senecacollege.ca), Pavlo Kuzhel (pavlo.kuzhel@senecacollege.ca)
 
 Forked from jQuery Flight Indicators (https://github.com/sebmatton/jQuery-Flight-Indicators)
 By Sébastien Matton (seb_matton@hotmail.com)
@@ -52,8 +52,10 @@ Published under GPLv3 License.
         };
 
         var increment = 0;
+        var increment_vario = 0;
         var ball_increment = 0.5;
         var ball_right = true;
+        var clockwise_vario = true;
 
         var airspeed = $.flightIndicator('#airspeed', 'airspeed', settings);
         var attitude = $.flightIndicator('#attitude', 'attitude', settings);
@@ -65,7 +67,8 @@ Published under GPLv3 License.
         setInterval(function() {
 
             // Airspeed update
-            airspeed.setAirSpeed(80+80*Math.sin(increment/10));
+            //airspeed.setAirSpeed(80 * Math.sin(increment/10));
+            airspeed.setAirSpeed(increment);
 
             // Attitude update
             attitude.setRoll(30*Math.sin(increment/10));
@@ -81,8 +84,8 @@ Published under GPLv3 License.
             turn_coordinator.setSlip(ball_increment);
             if (ball_increment <= 0) ball_right = true;
             if (ball_increment >= 1) ball_right = false;
-            if (ball_right == false) ball_increment -= 0.03;
-            else ball_increment += 0.03;
+            if (ball_right == false) ball_increment -= 0.01;
+            else ball_increment += 0.01;
 
             // Heading update
             heading.setHeading(increment);
@@ -90,7 +93,13 @@ Published under GPLv3 License.
             heading.setBeaconTwo(-increment * 0.75, true);
             
             // Vario update
-            variometer.setVario(2*Math.sin(increment/10));
+            if (increment_vario > 45) clockwise_vario = false;
+            if (increment_vario < - 45) clockwise_vario = true;
+
+            if (clockwise_vario) increment_vario += 0.3;
+            else increment_vario -= 0.3;
+
+            variometer.setVario(increment_vario);
 
         }, 50);
 
